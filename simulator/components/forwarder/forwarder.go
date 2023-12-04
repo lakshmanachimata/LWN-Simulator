@@ -4,17 +4,13 @@ import (
 	"sync"
 	"time"
 
-	dl "github.com/arslab/lwnsimulator/simulator/components/device/frames/downlink"
 	m "github.com/arslab/lwnsimulator/simulator/components/forwarder/models"
-	"github.com/arslab/lwnsimulator/simulator/resources/communication/buffer"
 	pkt "github.com/arslab/lwnsimulator/simulator/resources/communication/packets"
 	loc "github.com/arslab/lwnsimulator/simulator/resources/location"
 	"github.com/brocaar/lorawan"
 )
 
 type Forwarder struct {
-	DevToGw  map[lorawan.EUI64]map[lorawan.EUI64]*buffer.BufferUplink            // populates in setup and can update itself
-	GwtoDev  map[uint32]map[lorawan.EUI64]map[lorawan.EUI64]*dl.ReceivedDownlink // populates with register/unRegister
 	Gateways map[lorawan.EUI64]m.InfoGateway
 	Mutex    sync.Mutex
 }
