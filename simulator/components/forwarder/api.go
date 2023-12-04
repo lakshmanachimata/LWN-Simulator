@@ -31,7 +31,6 @@ func (f *Forwarder) DeleteGateway(g m.InfoGateway) {
 	delete(f.Gateways, g.MACAddress)
 
 }
-
 func (f *Forwarder) Reset() {
 	f = Setup()
 }
