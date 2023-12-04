@@ -46,7 +46,6 @@ func CreateConfigFiles() {
 
 	path[0] = pathDir + "/simulator.json"
 	path[1] = pathDir + "/gateways.json"
-	path[2] = pathDir + "/devices.json"
 
 	for i, _ := range path {
 

@@ -15,7 +15,6 @@ import (
 type Forwarder struct {
 	DevToGw  map[lorawan.EUI64]map[lorawan.EUI64]*buffer.BufferUplink            // populates in setup and can update itself
 	GwtoDev  map[uint32]map[lorawan.EUI64]map[lorawan.EUI64]*dl.ReceivedDownlink // populates with register/unRegister
-	Devices  map[lorawan.EUI64]m.InfoDevice
 	Gateways map[lorawan.EUI64]m.InfoGateway
 	Mutex    sync.Mutex
 }

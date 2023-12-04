@@ -1057,7 +1057,7 @@ function Init(){
         LoadListHome();
 
     }).fail((data)=>{
-        Show_ErrorSweetToast("Unable to load info of the devices", data.statusText); 
+        // Show_ErrorSweetToast("Unable to load info of the devices", data.statusText); 
     });
     
     // get the current status and set the buttons and status icon accordingly

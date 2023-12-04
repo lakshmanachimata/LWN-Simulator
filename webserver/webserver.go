@@ -8,13 +8,9 @@ import (
 
 	cnt "github.com/arslab/lwnsimulator/controllers"
 	"github.com/arslab/lwnsimulator/models"
-	dev "github.com/arslab/lwnsimulator/simulator/components/device"
-	rp "github.com/arslab/lwnsimulator/simulator/components/device/regional_parameters"
-	mrp "github.com/arslab/lwnsimulator/simulator/components/device/regional_parameters/models_rp"
 	gw "github.com/arslab/lwnsimulator/simulator/components/gateway"
 	"github.com/arslab/lwnsimulator/socket"
 	_ "github.com/arslab/lwnsimulator/webserver/statik"
-	"github.com/brocaar/lorawan"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	socketio "github.com/googollee/go-socket.io"
@@ -87,10 +83,6 @@ func NewWebServer(config *models.ServerConfig, controller cnt.SimulatorControlle
 		apiRoutes.GET("/status", simulatorStatus)
 		apiRoutes.GET("/bridge", getRemoteAddress)
 		apiRoutes.GET("/gateways", getGateways)
-		apiRoutes.GET("/devices", getDevices)
-		apiRoutes.POST("/add-device", addDevice)
-		apiRoutes.POST("/up-device", updateDevice)
-		apiRoutes.POST("/del-device", deleteDevice)
 		apiRoutes.POST("/del-gateway", deleteGateway)
 		apiRoutes.POST("/add-gateway", addGateway)
 		apiRoutes.POST("/up-gateway", updateGateway)
@@ -171,45 +163,6 @@ func deleteGateway(c *gin.Context) {
 
 }
 
-func getDevices(c *gin.Context) {
-	c.JSON(http.StatusOK, simulatorController.GetDevices())
-}
-
-func addDevice(c *gin.Context) {
-
-	var device dev.Device
-	c.BindJSON(&device)
-
-	code, id, err := simulatorController.AddDevice(&device)
-	errString := fmt.Sprintf("%v", err)
-
-	c.JSON(http.StatusOK, gin.H{"status": errString, "code": code, "id": id})
-
-}
-
-func updateDevice(c *gin.Context) {
-
-	var device dev.Device
-	c.BindJSON(&device)
-
-	code, err := simulatorController.UpdateDevice(&device)
-	errString := fmt.Sprintf("%v", err)
-
-	c.JSON(http.StatusOK, gin.H{"status": errString, "code": code})
-
-}
-
-func deleteDevice(c *gin.Context) {
-
-	Identifier := struct {
-		Id int `json:"id"`
-	}{}
-
-	c.BindJSON(&Identifier)
-
-	c.JSON(http.StatusOK, gin.H{"status": simulatorController.DeleteDevice(Identifier.Id)})
-}
-
 func newServerSocket() *socketio.Server {
 
 	serverSocket := socketio.NewServer(nil)
@@ -229,42 +182,8 @@ func newServerSocket() *socketio.Server {
 		s.Close()
 	})
 
-	serverSocket.OnEvent("/", socket.EventToggleStateDevice, func(s socketio.Conn, Id int) {
-		simulatorController.ToggleStateDevice(Id)
-	})
-
 	serverSocket.OnEvent("/", socket.EventToggleStateGateway, func(s socketio.Conn, Id int) {
 		simulatorController.ToggleStateGateway(Id)
-	})
-
-	serverSocket.OnEvent("/", socket.EventMacCommand, func(s socketio.Conn, data socket.MacCommand) {
-
-		switch data.CID {
-		case "DeviceTimeReq":
-			simulatorController.SendMACCommand(lorawan.DeviceTimeReq, data)
-		case "LinkCheckReq":
-			simulatorController.SendMACCommand(lorawan.LinkCheckReq, data)
-		case "PingSlotInfoReq":
-			simulatorController.SendMACCommand(lorawan.PingSlotInfoReq, data)
-
-		}
-
-	})
-
-	serverSocket.OnEvent("/", socket.EventChangePayload, func(s socketio.Conn, data socket.NewPayload) (string, bool) {
-		return simulatorController.ChangePayload(data)
-	})
-
-	serverSocket.OnEvent("/", socket.EventSendUplink, func(s socketio.Conn, data socket.NewPayload) {
-		simulatorController.SendUplink(data)
-	})
-
-	serverSocket.OnEvent("/", socket.EventGetParameters, func(s socketio.Conn, code int) mrp.Informations {
-		return rp.GetInfo(code)
-	})
-
-	serverSocket.OnEvent("/", socket.EventChangeLocation, func(s socketio.Conn, info socket.NewLocation) bool {
-		return simulatorController.ChangeLocation(info)
 	})
 
 	return serverSocket

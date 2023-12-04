@@ -3,13 +3,9 @@ package repositories
 import (
 	"errors"
 
-	"github.com/brocaar/lorawan"
-
 	"github.com/arslab/lwnsimulator/models"
-	e "github.com/arslab/lwnsimulator/socket"
 
 	"github.com/arslab/lwnsimulator/simulator"
-	dev "github.com/arslab/lwnsimulator/simulator/components/device"
 	gw "github.com/arslab/lwnsimulator/simulator/components/gateway"
 	"github.com/arslab/lwnsimulator/simulator/util"
 	socketio "github.com/googollee/go-socket.io"
@@ -28,15 +24,6 @@ type SimulatorRepository interface {
 	AddGateway(*gw.Gateway) (int, int, error)
 	UpdateGateway(*gw.Gateway) (int, error)
 	DeleteGateway(int) bool
-	AddDevice(*dev.Device) (int, int, error)
-	GetDevices() []dev.Device
-	UpdateDevice(*dev.Device) (int, error)
-	DeleteDevice(int) bool
-	ToggleStateDevice(int)
-	SendMACCommand(lorawan.CID, e.MacCommand)
-	ChangePayload(e.NewPayload) (string, bool)
-	SendUplink(e.NewPayload)
-	ChangeLocation(e.NewLocation) bool
 	ToggleStateGateway(int)
 }
 
@@ -110,43 +97,6 @@ func (s *simulatorRepository) UpdateGateway(gateway *gw.Gateway) (int, error) {
 
 func (s *simulatorRepository) DeleteGateway(Id int) bool {
 	return s.sim.DeleteGateway(Id)
-}
-
-func (s *simulatorRepository) AddDevice(device *dev.Device) (int, int, error) {
-	return s.sim.SetDevice(device, false)
-}
-
-func (s *simulatorRepository) GetDevices() []dev.Device {
-	return s.sim.GetDevices()
-}
-
-func (s *simulatorRepository) UpdateDevice(device *dev.Device) (int, error) {
-	code, _, err := s.sim.SetDevice(device, true)
-	return code, err
-}
-
-func (s *simulatorRepository) DeleteDevice(Id int) bool {
-	return s.sim.DeleteDevice(Id)
-}
-
-func (s *simulatorRepository) ToggleStateDevice(Id int) {
-	s.sim.ToggleStateDevice(Id)
-}
-
-func (s *simulatorRepository) SendMACCommand(cid lorawan.CID, data e.MacCommand) {
-	s.sim.SendMACCommand(cid, data)
-}
-
-func (s *simulatorRepository) ChangePayload(pl e.NewPayload) (string, bool) {
-	return s.sim.ChangePayload(pl)
-}
-
-func (s *simulatorRepository) SendUplink(pl e.NewPayload) {
-	s.sim.SendUplink(pl)
-}
-
-func (s *simulatorRepository) ChangeLocation(loc e.NewLocation) bool {
-	return s.sim.ChangeLocation(loc)
 }
 
 func (s *simulatorRepository) ToggleStateGateway(Id int) {
