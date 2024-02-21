@@ -4,4 +4,5 @@ data
 .idea
 /cmd/__debug*
 /cmd/config.json
-/cmd/lwnsimulator/
+/cmd/lwnsimulator/*
+.DS_Store
