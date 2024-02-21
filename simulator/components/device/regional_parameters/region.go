@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	LenChMask  = 16
+	LenChMask  = 20
 	Code_Eu868 = iota
 	Code_Us915
 	Code_Cn779

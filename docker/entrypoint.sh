@@ -64,6 +64,12 @@ case $DEV_REGION in
   RU864)
     DEV_REGION=10
     ;;
+  EUFSK)
+    DEV_REGION=10
+    ;;
+  QL256)
+    DEV_REGION=10
+    ;;
   *)
     DEV_REGION=NULL
     ;;
