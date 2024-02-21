@@ -21,6 +21,8 @@ const (
 	Code_Kr920
 	Code_In865
 	Code_Ru864
+	Code_EuFSK
+	Code_Ql256
 )
 
 const (
@@ -64,6 +66,8 @@ var regionRegistry = map[int]regionInfo{
 	Code_Kr920: {func() Region { return &Kr920{} }},
 	Code_In865: {func() Region { return &In865{} }},
 	Code_Ru864: {func() Region { return &Ru864{} }},
+	Code_EuFSK: {func() Region { return &EuFSK{} }},
+	Code_Ql256: {func() Region { return &Ql256{} }},
 }
 
 func GetRegionalParameters(Code int) Region {
