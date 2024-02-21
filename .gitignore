@@ -2,3 +2,6 @@ bin
 data
 
 .idea
+/cmd/__debug*
+/cmd/config.json
+/cmd/lwnsimulator/
