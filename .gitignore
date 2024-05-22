@@ -5,4 +5,4 @@ data
 /cmd/__debug*
 /cmd/config.json
 /cmd/lwnsimulator/*
-.DS_Store
+*.DS_Store

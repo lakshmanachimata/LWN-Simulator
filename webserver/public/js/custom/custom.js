@@ -278,7 +278,7 @@ $(document).ready(function(){
 
         if (this.id == "home-tab"){
             TurnMap = 0;
-            $(".section-header h1").text("LWN Simulator");
+            $(".section-header h1").text("LWN Simulator TEST");
 
             LoadListHome();
         }

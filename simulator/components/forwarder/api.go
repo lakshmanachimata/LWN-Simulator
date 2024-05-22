@@ -153,12 +153,27 @@ func (f *Forwarder) Downlink(data *lorawan.PHYPayload, freq uint32, macAddress l
 
 	f.Mutex.Lock()
 
-	for _, dl := range f.GwtoDev[freq][macAddress] {
-		dl.Push(data)
+	var devMap = f.GwtoDev[freq]
+	if devMap == nil {
+		devMap = f.GwtoDev[0]
+		if devMap != nil {
+			var devMap2 = devMap[macAddress]
+			if devMap2 != nil {
+				for _, dl := range devMap2 {
+					dl.Push(data)
+				}
+			}
+		}
+	} else {
+		var dm = devMap[macAddress]
+		if dm != nil {
+			for _, dl := range dm {
+				dl.Push(data)
+			}
+		} else {
+		}
 	}
-
 	f.Mutex.Unlock()
-
 }
 
 func (f *Forwarder) Reset() {

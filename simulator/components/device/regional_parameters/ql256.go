@@ -25,7 +25,7 @@ func (eu *Ql256) Setup() {
 	eu.Info.MinDataRate = 7
 	eu.Info.MaxDataRate = 7
 	eu.Info.MinRX1DROffset = 0
-	eu.Info.MaxRX1DROffset = 0
+	eu.Info.MaxRX1DROffset = 5
 	eu.Info.InfoGroupChannels = []models.InfoGroupChannels{
 		{
 			EnableUplink:       true,
@@ -43,10 +43,12 @@ func (eu *Ql256) Setup() {
 func (eu *Ql256) GetDataRate(datarate uint8) (string, string) {
 
 	switch datarate {
-	case 7:
+	case 0, 1, 2, 3, 4, 5, 7:
 		r := fmt.Sprintf("SF%vBW125", 12-datarate)
 		return "LORA", r
 
+	case 6:
+		return "LORA", "SF7BW250"
 	}
 	return "", ""
 }
@@ -83,8 +85,8 @@ func (eu *Ql256) GetChannels() []c.Channel {
 			EnableUplink:      eu.Info.InfoGroupChannels[0].EnableUplink,
 			FrequencyUplink:   frequency,
 			FrequencyDownlink: frequency,
-			MinDR:             0,
-			MaxDR:             5,
+			MinDR:             7,
+			MaxDR:             7,
 		}
 		channels = append(channels, ch)
 	}
@@ -155,10 +157,16 @@ func (eu *Ql256) GetDataRateBeacon() uint8 {
 func (eu *Ql256) GetPayloadSize(datarate uint8, dTime lorawan.DwellTime) (int, int) {
 
 	switch datarate {
-	case 7:
+	case 0, 1, 2:
+		return 59, 51
+	case 3:
+		return 123, 115
+	case 4, 5, 6, 7:
 		return 230, 222
 	}
+
 	return 0, 0
+
 }
 
 func (eu *Ql256) GetParameters() models.Parameters {
